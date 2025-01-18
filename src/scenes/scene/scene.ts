@@ -1,16 +1,14 @@
-import gsap from 'gsap';
 import { Assets, Color, Container, Rectangle, Sprite } from 'pixi.js';
 import { iSceneOptions } from './types';
 import createRadialGradientTexture from '../../utils/createRadialGradientTexture';
+import FadeContainer from '../../components/fadeContainer/fadeContainer';
 
-export default class Scene extends Container {
+export default class Scene extends FadeContainer {
   protected _id: string = '';
   protected _contentContainer: Container;
   protected _assetsBundleId: string = '';
   protected _isInitialized: boolean = false;
   protected _isRunning: boolean = false;
-  public hideAnimationVars: gsap.TweenVars = { duration: 0.5, alpha: 0 };
-  public showAnimationVars: gsap.TweenVars = { duration: 0.5, alpha: 0 };
   public referenceFrame: Rectangle;
   public resolution: number = 1;
 
@@ -84,6 +82,7 @@ export default class Scene extends Container {
    * It will load the configured assets through the constructor options given.
    */
   public async load() {
+    console.log('Scene::load', this._assetsBundleId);
     if (this._assetsBundleId !== '') {
       await Assets.loadBundle(this._assetsBundleId);
     }
@@ -93,20 +92,6 @@ export default class Scene extends Container {
    * Override this method to initialize the scene, called right before the scene is shown.
    */
   public async init() {}
-
-  /**
-   * Override this method to add content to the scene, called showing the scene.
-   */
-  public async show() {
-    await gsap.to(this, this.showAnimationVars);
-  }
-
-  /**
-   * Override this method to hide content from the scene, called for hiding the scene.
-   */
-  public async hide() {
-    await gsap.to(this, this.hideAnimationVars);
-  }
 
   /**
    * Override this method to reset the scene, called right after the scene is hidden.

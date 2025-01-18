@@ -37,6 +37,7 @@ export default class Deck extends Container {
     this.addChild(this._layerCards);
 
     this._counter = new Text(this._config.counterStyle as TextOptions);
+    this._counter.anchor.set(0.5);
     this._counter.position.copyFrom(this._config.counterPosition as PointData);
     this._counter.visible = false;
     this.addChild(this._counter);

@@ -51,6 +51,7 @@ export default class SceneTask1 extends Scene {
   constructor(options: iSceneOptions) {
     super(options);
 
+    // Create the background image by using a simple radial gradient
     this._background = this._getBackgroundGradient([
       { color: new Color(0x00fefe), stop: 0 },
       { color: new Color(0x000000), stop: 1 },
@@ -58,7 +59,6 @@ export default class SceneTask1 extends Scene {
     this._background.anchor.set(0.5);
     this._background.x = this.referenceFrame.width / 2;
     this._background.y = this.referenceFrame.height / 2;
-
     this.addChildAt(this._background, 0);
 
     // Set the animation up
@@ -168,7 +168,7 @@ export default class SceneTask1 extends Scene {
     this._uiConsole.x = (this.referenceFrame.width - this._uiConsole.width) / 2;
     this._uiConsole.y =
       this.referenceFrame.height -
-      this._uiConsole.height -
+      this._uiConsole.height / 2 -
       this._taskConfig.margin;
   }
 

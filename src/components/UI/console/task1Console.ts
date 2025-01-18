@@ -9,9 +9,9 @@ import { eTask1ConsoleButtons } from './types';
 export default class Task1Console extends Container {
   public buttons = new Map<eTask1ConsoleButtons, Button>();
   public config = {
-    gap: 25,
-    width: 150,
-    height: 60,
+    gap: 35,
+    width: 250,
+    height: 100,
   };
 
   constructor() {

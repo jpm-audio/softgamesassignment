@@ -8,9 +8,9 @@ import { MAIN_SELECTORS_CONFIG } from '../button/config/mainSelectors';
 export default class MainConsole extends Container {
   public buttons = new Map<eMainConsoleButtons, Button>();
   public config = {
-    gap: 25,
-    width: 350,
-    height: 250,
+    gap: 35,
+    width: 380,
+    height: 300,
   };
 
   constructor() {

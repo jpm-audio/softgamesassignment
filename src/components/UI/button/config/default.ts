@@ -61,7 +61,7 @@ export const DEFAULT_BUTTON_CONFIG: iButtonBuilderConfig = {
     [eButtonState.NORMAL]: () => {
       return {
         fontFamily: 'Arial',
-        fontSize: 34,
+        fontSize: 40,
         fontWeight: 'bold',
         fill: 0xffffff,
       };
@@ -69,7 +69,7 @@ export const DEFAULT_BUTTON_CONFIG: iButtonBuilderConfig = {
     [eButtonState.HOVER]: () => {
       return {
         fontFamily: 'Arial',
-        fontSize: 34,
+        fontSize: 40,
         fontWeight: 'bold',
         fill: 0xffffff,
       };
@@ -77,7 +77,7 @@ export const DEFAULT_BUTTON_CONFIG: iButtonBuilderConfig = {
     [eButtonState.ACTIVE]: () => {
       return {
         fontFamily: 'Arial',
-        fontSize: 34,
+        fontSize: 40,
         fontWeight: 'bold',
         fill: 0xffffff,
       };
@@ -85,7 +85,7 @@ export const DEFAULT_BUTTON_CONFIG: iButtonBuilderConfig = {
     [eButtonState.DISABLED]: () => {
       return {
         fontFamily: 'Arial',
-        fontSize: 34,
+        fontSize: 40,
         fontWeight: 'bold',
         fill: 0xffffff,
       };
