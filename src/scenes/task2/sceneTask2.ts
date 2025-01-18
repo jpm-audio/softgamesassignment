@@ -55,6 +55,9 @@ export default class SceneTask2 extends Scene {
       ...TEXT_IMAGE_BLENDER_OPTIONS,
       ...{ resolution: GameController.assetsResolution },
     });
+
+    // Back Button
+    this._setBackButton();
   }
 
   /**

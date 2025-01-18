@@ -12,7 +12,6 @@ import { Button } from '../../components/UI/button/button';
 import waitForTickerTime from '../../utils/waitForTickerTime';
 import waitForCondition from '../../utils/waitForCondition';
 import GameController from '../../systems/game/gameController';
-
 /**
  * Task 1 Scene
  *
@@ -146,6 +145,9 @@ export default class SceneTask1 extends Scene {
     // Create the UI console
     this._uiConsole = new Task1Console();
     this._layerUI.addChild(this._uiConsole);
+
+    // Back Button
+    this._setBackButton();
 
     // Bind the buttons to scene actions
     const playButton = this._uiConsole.buttons.get(

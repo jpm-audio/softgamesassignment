@@ -56,6 +56,9 @@ export default class SceneTask3 extends Scene {
 
     // Set interaction for moving the fire location by pressing on the screen
     this._background.on('pointerdown', this._onBackgroundPress, this);
+
+    // Back Button
+    this._setBackButton();
   }
 
   public async show() {
