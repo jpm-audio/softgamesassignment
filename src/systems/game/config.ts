@@ -29,7 +29,16 @@ const SCENE_MAIN_CONFIG: iGameSceneDefinition = {
 
 const SCENE1_CONFIG: iGameSceneDefinition = {
   class: SceneTask1,
-  options: { ...commonSceneOptions, ...{ id: 'task1' } },
+  options: {
+    ...commonSceneOptions,
+    ...{
+      id: 'task1',
+      load: {
+        name: 'tasks1_bundle',
+        assets: { alias: 'task1', src: 'assets/sprites/task_1_0.json' },
+      },
+    },
+  },
 };
 
 const SCENE2_CONFIG: iGameSceneDefinition = {

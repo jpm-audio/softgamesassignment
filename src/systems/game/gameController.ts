@@ -63,6 +63,10 @@ export default class GameController {
     this._config = config;
   }
 
+  /**
+   * Initializes the game controller and all the needed systems.
+   * @returns
+   */
   public async init() {
     // First init Error notification system
     GameController._bus.on(eGameEvents.ERROR, this.onError, this);
@@ -83,11 +87,17 @@ export default class GameController {
     });
 
     // - Init Main Scene
-    this._setSceneByIndex(0);
+    this._setSceneByIndex(1);
 
     // Resize Handling
   }
 
+  /**
+   * Takes care of the scene transition from the current one to the next one.
+   *
+   * @param sceneIndex
+   * @returns
+   */
   protected async _setSceneByIndex(sceneIndex: number) {
     // Checkif index is valid
     if (sceneIndex < 0 || sceneIndex >= this._scenes.length) return;

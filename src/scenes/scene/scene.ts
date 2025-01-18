@@ -1,5 +1,12 @@
 import gsap from 'gsap';
-import { Color, Container, Rectangle, Sprite } from 'pixi.js';
+import {
+  Assets,
+  AssetsBundle,
+  Color,
+  Container,
+  Rectangle,
+  Sprite,
+} from 'pixi.js';
 import { iSceneOptions } from './types';
 import createRadialGradientTexture from '../../utils/createRadialGradientTexture';
 import GameController from '../../systems/game/gameController';
@@ -7,6 +14,7 @@ import GameController from '../../systems/game/gameController';
 export default class Scene extends Container {
   protected _id: string = '';
   protected _contentContainer: Container;
+  protected _load: AssetsBundle | null = null;
   public hideAnimationVars: gsap.TweenVars = { duration: 0.5, alpha: 0 };
   public showAnimationVars: gsap.TweenVars = { duration: 0.5, alpha: 0 };
   public referenceFrame: Rectangle;
@@ -21,6 +29,7 @@ export default class Scene extends Container {
     // Update scene options
     this._id = options.id ?? '';
     this.referenceFrame = options.referenceFrame;
+    this._load = options.load ?? null;
     if (options.hideAnimation !== undefined) {
       this.hideAnimationVars = {
         ...this.hideAnimationVars,
@@ -69,6 +78,16 @@ export default class Scene extends Container {
     background.x = this.referenceFrame.width / 2;
     background.y = this.referenceFrame.height / 2;
     return background;
+  }
+
+  /**
+   * It will load the configured assets through the constructor options given.
+   */
+  public async load() {
+    if (this._load !== null) {
+      Assets.addBundle(this.load.name, this._load.assets);
+      await Assets.loadBundle(this.load.name);
+    }
   }
 
   /**
