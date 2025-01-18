@@ -1,10 +1,8 @@
-import { Color, Sprite } from 'pixi.js';
+import { Color } from 'pixi.js';
 import Scene from '../scene/scene';
 import { iSceneOptions } from '../scene/types';
 
 export default class SceneTask3 extends Scene {
-  private _background!: Sprite;
-
   constructor(options: iSceneOptions) {
     super(options);
 
@@ -19,8 +17,45 @@ export default class SceneTask3 extends Scene {
     this.addChildAt(this._background, 0);
   }
 
-  public onScreenResize(drawFrame: { width: number; height: number }) {
-    const size = Math.max(drawFrame.width, drawFrame.height);
-    this._background.width = this._background.height = size;
+  public async init() {
+    if (this._isInitialized) return;
+    this._isInitialized = true;
+
+    // Load the assets
+    await this.load();
+
+    // Create the particle emitter for the fire
+
+    // Set interaction for moving the fire location by pressing on the screen
+    this._background.on('pointerdown', this._onBackgroundPress, this);
+  }
+
+  protected show() {
+    super.show();
+    // Start fire emission
+    this._animate();
+    this.enable();
+  }
+
+  protected _onBackgroundPress(e: InteractionEvent) {
+    // Set the fire location to the pointer position
+  }
+
+  public async _animate() {
+    // Start fire emission
+  }
+
+  public async reset() {
+    // Stop fire emission
+  }
+
+  public enable() {
+    this._background.eventMode = 'static';
+    this._background.cursor = 'pointer';
+  }
+
+  public disable() {
+    this._background.eventMode = 'none';
+    this._background.cursor = 'default';
   }
 }

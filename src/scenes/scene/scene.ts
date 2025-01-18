@@ -3,7 +3,13 @@ import { iSceneOptions } from './types';
 import createRadialGradientTexture from '../../utils/createRadialGradientTexture';
 import FadeContainer from '../../components/fadeContainer/fadeContainer';
 
+/**
+ * Scene
+ *
+ * Base class for all the scenes of the game. It holds basic and common functionality to all scenes.
+ */
 export default class Scene extends FadeContainer {
+  protected _background!: Sprite;
   protected _id: string = '';
   protected _contentContainer: Container;
   protected _assetsBundleId: string = '';
@@ -101,13 +107,31 @@ export default class Scene extends FadeContainer {
     this.alpha = 0;
   }
 
+  /**
+   * To be used instead addChild to add content to the content container.
+   *
+   * @param content
+   */
   public addContent(content: Container) {
     this._contentContainer.addChild(content);
   }
 
+  /**
+   * Same as addContent but removes the content from the content container.
+   *
+   * @param content
+   */
   public removeContent(content: Container) {
     this._contentContainer.removeChild(content);
   }
 
-  public onScreenResize(_drawFrame: { width: number; height: number }) {}
+  /**
+   * Handles the scene resize event, adapting the background.
+   *
+   * @param drawFrame
+   */
+  public onScreenResize(drawFrame: { width: number; height: number }) {
+    const size = Math.max(drawFrame.width, drawFrame.height);
+    this._background.width = this._background.height = size;
+  }
 }

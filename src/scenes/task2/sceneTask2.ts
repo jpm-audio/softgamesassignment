@@ -1,4 +1,4 @@
-import { Color, Container, Sprite } from 'pixi.js';
+import { Color, Container } from 'pixi.js';
 import Scene from '../scene/scene';
 import { iSceneOptions } from '../scene/types';
 import TextImageBlender from '../../systems/textImageBlender/textImageBlender';
@@ -8,7 +8,6 @@ import GameController from '../../systems/game/gameController';
 import FadeContainer from '../../components/fadeContainer/fadeContainer';
 
 export default class SceneTask2 extends Scene {
-  private _background!: Sprite;
   private _layerText: FadeContainer;
   private _currentLine!: Container;
   public textLineBlender!: TextImageBlender;
@@ -96,10 +95,5 @@ export default class SceneTask2 extends Scene {
   public reset() {
     super.reset();
     this._isRunning = false;
-  }
-
-  public onScreenResize(drawFrame: { width: number; height: number }) {
-    const size = Math.max(drawFrame.width, drawFrame.height);
-    this._background.width = this._background.height = size;
   }
 }

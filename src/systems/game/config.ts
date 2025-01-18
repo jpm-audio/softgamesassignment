@@ -46,7 +46,10 @@ const SCENE2_CONFIG: iGameSceneDefinition = {
 
 const SCENE3_CONFIG: iGameSceneDefinition = {
   class: SceneTask3,
-  options: { ...commonSceneOptions, ...{ id: 'task3' } },
+  options: {
+    ...commonSceneOptions,
+    ...{ id: 'task3', assetBundleId: 'task3' },
+  },
 };
 
 export const GAME_CONFIG: iGameConfig = {
@@ -71,6 +74,15 @@ export const GAME_CONFIG: iGameConfig = {
             {
               alias: 'task2',
               src: 'task_2_0.json',
+            },
+          ],
+        },
+        {
+          name: 'task3',
+          assets: [
+            {
+              alias: 'task3',
+              src: 'task_3_0.json',
             },
           ],
         },

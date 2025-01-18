@@ -1,4 +1,4 @@
-import { Color, Container, Point, Sprite, Ticker } from 'pixi.js';
+import { Color, Container, Point, Ticker } from 'pixi.js';
 import Scene from '../scene/scene';
 import { iSceneOptions } from '../scene/types';
 import Deck from '../../components/cards/deck';
@@ -26,7 +26,6 @@ export default class SceneTask1 extends Scene {
   private _isPaused: boolean = false;
   private _taskConfig = TASK_1_CONFIG;
 
-  private _background!: Sprite;
   private _decks: Deck[] = [];
   private _cards: Card[] = [];
   private _cardAnimations: CardAnimation[] = [];
@@ -354,15 +353,5 @@ export default class SceneTask1 extends Scene {
     super.reset();
     if (!this._isInitialized) return;
     this.resetAnimation();
-  }
-
-  /**
-   * Handles the scene resize event, adapting the background.
-   *
-   * @param drawFrame
-   */
-  public onScreenResize(drawFrame: { width: number; height: number }) {
-    const size = Math.max(drawFrame.width, drawFrame.height);
-    this._background.width = this._background.height = size;
   }
 }
