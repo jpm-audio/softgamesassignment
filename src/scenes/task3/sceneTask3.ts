@@ -1,8 +1,12 @@
-import { Color } from 'pixi.js';
+import { Color, FederatedPointerEvent } from 'pixi.js';
 import Scene from '../scene/scene';
 import { iSceneOptions } from '../scene/types';
+import { ParticleEmitter } from '../../systems/particles/ParticleEmitter';
+import { FIRE_PARTICLES_CONFIG } from '../../components/fire/configs/fireConfig';
 
 export default class SceneTask3 extends Scene {
+  protected _fireEmitter!: ParticleEmitter;
+
   constructor(options: iSceneOptions) {
     super(options);
 
@@ -25,28 +29,36 @@ export default class SceneTask3 extends Scene {
     await this.load();
 
     // Create the particle emitter for the fire
+    this._fireEmitter = new ParticleEmitter(FIRE_PARTICLES_CONFIG);
+    this._fireEmitter.x = this.referenceFrame.width / 2;
+    this._fireEmitter.y = this.referenceFrame.height / 2;
+    this.addChild(this._fireEmitter);
 
     // Set interaction for moving the fire location by pressing on the screen
     this._background.on('pointerdown', this._onBackgroundPress, this);
   }
 
-  protected show() {
-    super.show();
+  public async show() {
+    await super.show();
     // Start fire emission
     this._animate();
     this.enable();
   }
 
-  protected _onBackgroundPress(e: InteractionEvent) {
+  protected _onBackgroundPress(e: FederatedPointerEvent) {
     // Set the fire location to the pointer position
+    this._fireEmitter.x = e.client.x;
+    this._fireEmitter.y = e.client.y;
   }
 
   public async _animate() {
-    // Start fire emission
+    if (!this._isInitialized) return;
+    this._fireEmitter.start(true);
   }
 
   public async reset() {
-    // Stop fire emission
+    if (!this._isInitialized) return;
+    this._fireEmitter.stop();
   }
 
   public enable() {

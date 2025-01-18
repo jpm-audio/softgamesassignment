@@ -8,8 +8,8 @@ import GameController from '../../systems/game/gameController';
 import FadeContainer from '../../components/fadeContainer/fadeContainer';
 
 export default class SceneTask2 extends Scene {
-  private _layerText: FadeContainer;
-  private _currentLine!: Container;
+  protected _layerText: FadeContainer;
+  protected _currentLine!: Container;
   public textLineBlender!: TextImageBlender;
 
   constructor(options: iSceneOptions) {
@@ -61,7 +61,7 @@ export default class SceneTask2 extends Scene {
    * Animate the text-image blender with a fade-in and fade-out animation.
    * It will recursively iterate every time configured.
    */
-  private async _animate() {
+  protected async _animate() {
     if (!this._isRunning) return;
 
     // Hide the current line if any

@@ -131,6 +131,7 @@ export default class Scene extends FadeContainer {
    * @param drawFrame
    */
   public onScreenResize(drawFrame: { width: number; height: number }) {
+    if (!this._background) return;
     const size = Math.max(drawFrame.width, drawFrame.height);
     this._background.width = this._background.height = size;
   }

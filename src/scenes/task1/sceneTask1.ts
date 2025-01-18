@@ -23,19 +23,19 @@ import GameController from '../../systems/game/gameController';
  * movement should take 2 seconds.
  */
 export default class SceneTask1 extends Scene {
-  private _isPaused: boolean = false;
-  private _taskConfig = TASK_1_CONFIG;
+  protected _isPaused: boolean = false;
+  protected _taskConfig = TASK_1_CONFIG;
 
-  private _decks: Deck[] = [];
-  private _cards: Card[] = [];
-  private _cardAnimations: CardAnimation[] = [];
-  private _animationTicker: Ticker;
-  private _uiConsole!: Task1Console;
+  protected _decks: Deck[] = [];
+  protected _cards: Card[] = [];
+  protected _cardAnimations: CardAnimation[] = [];
+  protected _animationTicker: Ticker;
+  protected _uiConsole!: Task1Console;
 
-  private _layerDecks: Container;
-  private _layerBackCards: Container;
-  private _layerFrontCards: Container;
-  private _layerUI: Container;
+  protected _layerDecks: Container;
+  protected _layerBackCards: Container;
+  protected _layerFrontCards: Container;
+  protected _layerUI: Container;
 
   public set isRunning(value: boolean) {
     this._isRunning = value;
@@ -111,7 +111,7 @@ export default class SceneTask1 extends Scene {
   /**
    * Create all the cards fron config by using a card factory
    */
-  private async _createCards() {
+  protected async _createCards() {
     for (let i = 0; i < this._taskConfig.numCards; i++) {
       const card = CardsFactory.card((i + 1).toString());
       this._cards.push(card);
@@ -121,7 +121,7 @@ export default class SceneTask1 extends Scene {
   /**
    * Create the decks of cards and position them in the scene
    */
-  private async _createDecks() {
+  protected async _createDecks() {
     // Create the _decks of cards
     this._decks.push(new Deck(DECK1_CONFIG));
     this._decks.push(new Deck(DECK2_CONFIG));
@@ -142,7 +142,7 @@ export default class SceneTask1 extends Scene {
   /**
    * Create the UI console and bind the buttons to scene actions
    */
-  private _createUI() {
+  protected _createUI() {
     // Create the UI console
     this._uiConsole = new Task1Console();
     this._layerUI.addChild(this._uiConsole);
@@ -178,7 +178,7 @@ export default class SceneTask1 extends Scene {
    *
    * @returns
    */
-  private async _animateACard() {
+  protected async _animateACard() {
     await waitForCondition(() => this._isPaused);
 
     if (!this._isRunning) return;
@@ -253,7 +253,7 @@ export default class SceneTask1 extends Scene {
   /**
    * Reset all the cards and the decks to the initial state
    */
-  private _resetCards() {
+  protected _resetCards() {
     // Empty the decks
     this._decks.forEach((deck) => deck.reset());
 
@@ -271,7 +271,7 @@ export default class SceneTask1 extends Scene {
    *
    * @returns
    */
-  private _updateUIState() {
+  protected _updateUIState() {
     if (!this._isInitialized) return;
     const playButton = this._uiConsole.buttons.get(
       eTask1ConsoleButtons.PLAY
