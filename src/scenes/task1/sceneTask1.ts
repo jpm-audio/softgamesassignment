@@ -79,6 +79,8 @@ export default class SceneTask1 extends Scene {
     // Layer to contain the UI
     this._layerUI = new Container();
     this.addChild(this._layerUI);
+
+    if (options.title) this._setTitle(options.title);
   }
 
   /**

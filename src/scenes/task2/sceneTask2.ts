@@ -36,6 +36,8 @@ export default class SceneTask2 extends Scene {
     this._layerText.x = this.referenceFrame.width / 2;
     this._layerText.y = this.referenceFrame.height / 2;
     this.addChild(this._layerText);
+
+    if (options.title) this._setTitle(options.title);
   }
 
   /**

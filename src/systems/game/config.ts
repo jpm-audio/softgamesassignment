@@ -25,14 +25,17 @@ const commonSceneOptions: iSceneOptions = {
 
 const SCENE_MAIN_CONFIG: iGameSceneDefinition = {
   class: SceneMain,
-  options: { ...commonSceneOptions, ...{ id: 'main' } },
+  options: {
+    ...commonSceneOptions,
+    ...{ id: 'main', title: 'jPm - Softgames Assignment' },
+  },
 };
 
 const SCENE1_CONFIG: iGameSceneDefinition = {
   class: SceneTask1,
   options: {
     ...commonSceneOptions,
-    ...{ id: 'task1', assetBundleId: 'task1' },
+    ...{ id: 'task1', assetBundleId: 'task1', title: 'Ace of Shadows' },
   },
 };
 
@@ -40,7 +43,7 @@ const SCENE2_CONFIG: iGameSceneDefinition = {
   class: SceneTask2,
   options: {
     ...commonSceneOptions,
-    ...{ id: 'task2', assetBundleId: 'task2' },
+    ...{ id: 'task2', assetBundleId: 'task2', title: 'Magic Words' },
   },
 };
 
@@ -48,7 +51,7 @@ const SCENE3_CONFIG: iGameSceneDefinition = {
   class: SceneTask3,
   options: {
     ...commonSceneOptions,
-    ...{ id: 'task3', assetBundleId: 'task3' },
+    ...{ id: 'task3', assetBundleId: 'task3', title: 'Phoenix Flame' },
   },
 };
 

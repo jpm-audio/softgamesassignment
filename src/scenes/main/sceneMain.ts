@@ -21,8 +21,9 @@ export default class SceneMain extends Scene {
     background.anchor.set(0.5);
     background.x = this.referenceFrame.width / 2;
     background.y = this.referenceFrame.height / 2;
-
     this.addChildAt(background, 0);
+
+    if (options.title) this._setTitle(options.title);
   }
 
   public async init() {

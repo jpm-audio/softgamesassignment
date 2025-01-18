@@ -1,10 +1,4 @@
-import {
-  Color,
-  FederatedPointerEvent,
-  Text,
-  TextStyle,
-  TextStyleOptions,
-} from 'pixi.js';
+import { Color, FederatedPointerEvent, Text, TextStyleOptions } from 'pixi.js';
 import Scene from '../scene/scene';
 import { iSceneOptions } from '../scene/types';
 import { ParticleEmitter } from '../../systems/particles/ParticleEmitter';
@@ -33,6 +27,8 @@ export default class SceneTask3 extends Scene {
     this._layerText.x = this.referenceFrame.width / 2;
     this._layerText.y = (2 * this.referenceFrame.height) / 3;
     this.addContent(this._layerText);
+
+    if (options.title) this._setTitle(options.title);
   }
 
   public async init() {
@@ -43,8 +39,7 @@ export default class SceneTask3 extends Scene {
     await this.load();
 
     // Line text
-    const textStyle = new TextStyle(TASK3_CONFIG.textLine as TextStyleOptions);
-    const text = new Text(textStyle);
+    const text = new Text(TASK3_CONFIG.textLine as TextStyleOptions);
     text.anchor.set(0.5);
     this._layerText.addChild(text);
 
@@ -62,9 +57,11 @@ export default class SceneTask3 extends Scene {
   }
 
   public async show() {
+    this._layerText.show();
     await super.show();
     // Start fire emission
     this._animate();
+
     this.enable();
   }
 

@@ -1,4 +1,4 @@
-import { Assets, Color, Container, Rectangle, Sprite } from 'pixi.js';
+import { Assets, Color, Container, Rectangle, Sprite, Text } from 'pixi.js';
 import { iSceneOptions } from './types';
 import createRadialGradientTexture from '../../utils/createRadialGradientTexture';
 import FadeContainer from '../../components/fadeContainer/fadeContainer';
@@ -12,6 +12,7 @@ import BackButton from '../../components/UI/backButton/backButton';
 export default class Scene extends FadeContainer {
   protected _background!: Sprite;
   protected _backButton!: BackButton;
+  protected _title!: Text;
   protected _id: string = '';
   protected _contentContainer: Container;
   protected _assetsBundleId: string = '';
@@ -95,6 +96,24 @@ export default class Scene extends FadeContainer {
       this._backButton.height;
     this._backButton.y = this._backButton.height;
     this.addContent(this._backButton);
+  }
+
+  protected _setTitle(text: string) {
+    this._title = new Text({
+      text,
+      style: {
+        fontSize: 54,
+        fill: 0xffffff,
+        align: 'center',
+        fontFamily: 'Arial',
+        fontWeight: 'bold',
+      },
+      resolution: this.resolution,
+    });
+    this._title.x = this.referenceFrame.width / 2;
+    this._title.y = 100;
+    this._title.anchor.set(0.5);
+    this.addContent(this._title);
   }
 
   /**
