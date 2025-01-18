@@ -148,9 +148,6 @@ export default class SceneTask1 extends Scene {
     this._uiConsole = new Task1Console();
     this._layerUI.addChild(this._uiConsole);
 
-    // Back Button
-    this._setBackButton();
-
     // Bind the buttons to scene actions
     const playButton = this._uiConsole.buttons.get(
       eTask1ConsoleButtons.PLAY

@@ -1,12 +1,12 @@
-import { Container } from 'pixi.js';
 import { Button } from '../button/button';
 import ButtonFactory from '../button/buttonFactory';
 import { PRIMARY_BUTTON_CONFIG } from '../button/config/primary';
 import ButtonBuilderRect from '../button/buttonBuilder/buttonBuilderRect';
 import GameController from '../../../systems/game/gameController';
 import { eGameEvents } from '../../../systems/game/types';
+import FadeContainer from '../../fadeContainer/fadeContainer';
 
-export default class BackButton extends Container {
+export default class BackButton extends FadeContainer {
   protected _button: Button;
   constructor() {
     super();
@@ -27,5 +27,13 @@ export default class BackButton extends Container {
     });
 
     this._button.enable();
+  }
+
+  public enable() {
+    this._button.enable();
+  }
+
+  public disable() {
+    this._button.disable();
   }
 }

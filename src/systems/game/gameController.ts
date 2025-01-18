@@ -8,6 +8,8 @@ import {
 } from './types';
 import Environment from '../environment/environment';
 import { eEnvironmentEvents } from '../environment/types';
+import FpsDisplay from '../../components/UI/display/fpsDisplay';
+import BackButton from '../../components/UI/backButton/backButton';
 
 /**
  * Game Controller
@@ -25,6 +27,7 @@ export default class GameController {
   protected _currentSceneIndex: number = -1;
   protected _layerGame!: Container;
   protected _layerUI!: Container;
+  protected _backButton!: BackButton;
   protected _drawFrame!: { width: number; height: number };
 
   protected static get _stage() {
@@ -114,18 +117,32 @@ export default class GameController {
       );
     });
 
-    // - Init Main Scene
-    this._setSceneByIndex(0);
-
-    // Resize Handling
-    this._watchResize();
-
     // Listen for navigation requests
     GameController.bus.on(
       eGameEvents.NAVIGATION_REQUESTED,
       this.onNavigationRequested,
       this
     );
+
+    // Add FPS Display
+    const fpsDisplay = new FpsDisplay({
+      ticker: GameController.ticker,
+      poolSize: 10,
+    });
+    this._layerUI.addChild(fpsDisplay);
+
+    // Back Button
+    this._backButton = new BackButton();
+    this._backButton.alpha = 0;
+    this._backButton.visible = false;
+    this._backButton.disable();
+    this._layerUI.addChild(this._backButton);
+
+    // - Init Main Scene
+    this._setSceneByIndex(0);
+
+    // Resize Handling
+    this._watchResize();
   }
 
   /**
@@ -143,12 +160,20 @@ export default class GameController {
     const nextScene = this._scenes[sceneIndex];
 
     // Disable UI
+    this._backButton.disable();
 
     // Change the scenes
     await nextScene.init();
 
     this._layerGame.addChild(nextScene);
     nextScene.onScreenResize(this._drawFrame);
+
+    // Show the Back Button?
+    if (sceneIndex > 0) {
+      this._backButton.show();
+    } else {
+      this._backButton.hide();
+    }
 
     const currentSceneHide =
       currentScene !== undefined ? currentScene.hide() : null;
@@ -163,6 +188,9 @@ export default class GameController {
 
     // Update scene index
     this._currentSceneIndex = sceneIndex;
+
+    // Enable UI
+    this._backButton.enable();
   }
 
   /**
@@ -240,6 +268,7 @@ export default class GameController {
           };
 
     this._layerGame.scale.set(scale);
+    this._layerUI.scale.set(scale);
 
     // Center the game layer by the reference frame into the draw frame
     this._layerGame.x =
@@ -247,6 +276,16 @@ export default class GameController {
     this._layerGame.y =
       ((this._drawFrame.height - this._config.referenceSize.height) / 2) *
       scale;
+
+    // Set the Back Button position
+    if (this._backButton) {
+      this._backButton.x =
+        this._drawFrame.width -
+        this._backButton.width / 2 -
+        this._config.referenceMargin;
+      this._backButton.y =
+        this._backButton.height / 2 + this._config.referenceMargin;
+    }
 
     // Update the draw frame in the scenes
     if (this._scenes[this._currentSceneIndex]) {

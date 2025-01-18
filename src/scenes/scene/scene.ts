@@ -87,17 +87,6 @@ export default class Scene extends FadeContainer {
     return background;
   }
 
-  protected _setBackButton() {
-    // Back Button
-    this._backButton = new BackButton();
-    this._backButton.x =
-      this.referenceFrame.width -
-      this._backButton.width / 2 -
-      this._backButton.height;
-    this._backButton.y = this._backButton.height;
-    this.addContent(this._backButton);
-  }
-
   protected _setTitle(text: string) {
     this._title = new Text({
       text,

@@ -17,6 +17,7 @@ export interface iGameSceneDefinition {
 
 export interface iGameConfig {
   referenceSize: Rectangle;
+  referenceMargin: number;
   scenes: iGameSceneDefinition[];
   assetsInitOptions: AssetInitOptions;
 }

@@ -57,6 +57,7 @@ const SCENE3_CONFIG: iGameSceneDefinition = {
 
 export const GAME_CONFIG: iGameConfig = {
   referenceSize: mainFrame,
+  referenceMargin: 30,
   scenes: [SCENE_MAIN_CONFIG, SCENE1_CONFIG, SCENE2_CONFIG, SCENE3_CONFIG],
   assetsInitOptions: {
     basePath: 'assets/sprites/',

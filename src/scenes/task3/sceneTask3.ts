@@ -1,4 +1,4 @@
-import { Color, FederatedPointerEvent, Text, TextStyleOptions } from 'pixi.js';
+import { Color, FederatedPointerEvent, Text, TextOptions } from 'pixi.js';
 import Scene from '../scene/scene';
 import { iSceneOptions } from '../scene/types';
 import { ParticleEmitter } from '../../systems/particles/ParticleEmitter';
@@ -39,7 +39,7 @@ export default class SceneTask3 extends Scene {
     await this.load();
 
     // Line text
-    const text = new Text(TASK3_CONFIG.textLine as TextStyleOptions);
+    const text = new Text(TASK3_CONFIG.textLine as TextOptions);
     text.anchor.set(0.5);
     this._layerText.addChild(text);
 
@@ -51,9 +51,6 @@ export default class SceneTask3 extends Scene {
 
     // Set interaction for moving the fire location by pressing on the screen
     this._background.on('pointerdown', this._onBackgroundPress, this);
-
-    // Back Button
-    this._setBackButton();
   }
 
   public async show() {
