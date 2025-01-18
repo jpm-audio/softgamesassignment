@@ -23,7 +23,6 @@ import GameController from '../../systems/game/gameController';
  * movement should take 2 seconds.
  */
 export default class SceneTask1 extends Scene {
-  private _isInitialized: boolean = false;
   private _isPaused: boolean = false;
   private _taskConfig = TASK_1_CONFIG;
 
@@ -181,7 +180,6 @@ export default class SceneTask1 extends Scene {
    * @returns
    */
   private async _animateACard() {
-    console.log(this._isPaused);
     await waitForCondition(() => this._isPaused);
 
     if (!this._isRunning) return;

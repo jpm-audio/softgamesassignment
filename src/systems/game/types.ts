@@ -28,6 +28,11 @@ export enum eGameStates {
 
 export enum eGameEvents {
   ERROR = 'gameEventError',
+  NAVIGATION_REQUESTED = 'gameEventeNavigationRequested',
+}
+
+export interface iGameEventNavRequestedInfo {
+  sceneIndex: number;
 }
 
 export interface iGameEventErrorInfo {

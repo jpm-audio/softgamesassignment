@@ -1,6 +1,11 @@
 import { Application, Assets, Container, EventEmitter } from 'pixi.js';
 import Scene from '../../scenes/scene/scene';
-import { eGameEvents, iGameConfig, iGameEventErrorInfo } from './types';
+import {
+  eGameEvents,
+  iGameConfig,
+  iGameEventErrorInfo,
+  iGameEventNavRequestedInfo,
+} from './types';
 import Environment from '../environment/environment';
 import { eEnvironmentEvents } from '../environment/types';
 
@@ -110,10 +115,17 @@ export default class GameController {
     });
 
     // - Init Main Scene
-    this._setSceneByIndex(1);
+    this._setSceneByIndex(0);
 
     // Resize Handling
     this._watchResize();
+
+    // Listen for navigation requests
+    GameController.bus.on(
+      eGameEvents.NAVIGATION_REQUESTED,
+      this.onNavigationRequested,
+      this
+    );
   }
 
   /**
@@ -168,6 +180,18 @@ export default class GameController {
       this
     );
     this.onScreenResize();
+  }
+
+  /**
+   * Listener callback for navigation requested events.
+   * It will change the current scene if the requested scene index is different from the current one.
+   *
+   * @param event
+   */
+  public onNavigationRequested(event: iGameEventNavRequestedInfo) {
+    if (event.sceneIndex !== this._currentSceneIndex) {
+      this._setSceneByIndex(event.sceneIndex);
+    }
   }
 
   /**

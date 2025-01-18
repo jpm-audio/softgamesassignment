@@ -7,6 +7,7 @@ export default class Scene extends Container {
   protected _id: string = '';
   protected _contentContainer: Container;
   protected _assetsBundleId: string = '';
+  protected _isInitialized: boolean = false;
   protected _isRunning: boolean = false;
   public hideAnimationVars: gsap.TweenVars = { duration: 0.5, alpha: 0 };
   public showAnimationVars: gsap.TweenVars = { duration: 0.5, alpha: 0 };
