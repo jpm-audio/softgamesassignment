@@ -20,6 +20,7 @@ const commonSceneOptions: iSceneOptions = {
     alpha: 1,
     ease: 'power2.in',
   },
+  assetBundleId: '',
 };
 
 const SCENE_MAIN_CONFIG: iGameSceneDefinition = {
@@ -31,13 +32,7 @@ const SCENE1_CONFIG: iGameSceneDefinition = {
   class: SceneTask1,
   options: {
     ...commonSceneOptions,
-    ...{
-      id: 'task1',
-      load: {
-        name: 'tasks1_bundle',
-        assets: { alias: 'task1', src: 'assets/sprites/task_1_0.json' },
-      },
-    },
+    ...{ id: 'task1', assetBundleId: 'task1' },
   },
 };
 
@@ -54,4 +49,20 @@ const SCENE3_CONFIG: iGameSceneDefinition = {
 export const GAME_CONFIG: iGameConfig = {
   referenceSize: mainFrame,
   scenes: [SCENE_MAIN_CONFIG, SCENE1_CONFIG, SCENE2_CONFIG, SCENE3_CONFIG],
+  assetsInitOptions: {
+    basePath: 'assets/sprites/',
+    manifest: {
+      bundles: [
+        {
+          name: 'task1',
+          assets: [
+            {
+              alias: 'task1',
+              src: 'task_1_0.json',
+            },
+          ],
+        },
+      ],
+    },
+  },
 };

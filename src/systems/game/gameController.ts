@@ -1,4 +1,4 @@
-import { Application, Container, EventEmitter } from 'pixi.js';
+import { Application, Assets, Container, EventEmitter } from 'pixi.js';
 import Scene from '../../scenes/scene/scene';
 import { eGameEvents, iGameConfig, iGameEventErrorInfo } from './types';
 import Environment from '../environment/environment';
@@ -89,6 +89,7 @@ export default class GameController {
     GameController._bus.on(eGameEvents.ERROR, this.onError, this);
 
     // Game Resolution
+    Assets.init(this._config.assetsInitOptions);
 
     // Layers
     this._layerGame = new Container();
@@ -215,8 +216,6 @@ export default class GameController {
           };
 
     this._layerGame.scale.set(scale);
-
-    console.log(GameController.environment.viewportAR, scale, this._drawFrame);
 
     // Center the game layer by the reference frame into the draw frame
     this._layerGame.x =

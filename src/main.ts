@@ -24,7 +24,7 @@ import { ENVIRONMENT_CONFIG } from './systems/environment/settings';
     resizeTo: canvasContainerEl,
     resolution: environment.canvasResolution,
   });
-  document.body.appendChild(app.canvas);
+  canvasContainerEl.appendChild(app.canvas);
 
   // Init GSAP
   gsap.registerPlugin(PixiPlugin);

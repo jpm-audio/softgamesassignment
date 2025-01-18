@@ -4,7 +4,13 @@ import Card from '../../components/cards/card';
 
 export default class CardAnimation {
   public FLIP_OFFSET = { x: 0, y: -50 };
-  private _currentTweens: gsap.core.Tween[] = [];
+  public duration = 0.5;
+  protected _currentTweens: gsap.core.Tween[] = [];
+  protected _isRunning: boolean = false;
+
+  public get isRunning() {
+    return this._isRunning;
+  }
 
   public addPlay(
     card: Card,
@@ -28,7 +34,7 @@ export default class CardAnimation {
         skewX: -3,
         skewY: -7,
       },
-      duration: 1,
+      duration: this.duration / 2,
       ease: 'power1.in',
     });
     tween1.pause();
@@ -42,7 +48,7 @@ export default class CardAnimation {
         skewX: 0,
         skewY: 0,
       },
-      duration: 1,
+      duration: this.duration / 2,
       ease: 'power1.out',
       onComplete: onComplete,
     });
@@ -60,12 +66,16 @@ export default class CardAnimation {
 
     tween2.vars.onComplete = () => {
       this._currentTweens.splice(this._currentTweens.indexOf(tween2), 1);
+      this._isRunning = false;
       onComplete();
     };
+
+    tween1.play();
   }
 
   public start() {
-    this._currentTweens[0].play();
+    this._isRunning = true;
+    this._currentTweens.forEach((tween) => tween.play());
   }
 
   public pause() {
@@ -77,6 +87,7 @@ export default class CardAnimation {
   }
 
   public stop() {
+    this._isRunning = false;
     this._currentTweens.forEach((tween) => tween.kill());
     this._currentTweens = [];
   }

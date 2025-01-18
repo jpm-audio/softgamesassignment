@@ -1,4 +1,10 @@
-import { Container, Graphics, Rectangle, Sprite } from 'pixi.js';
+import {
+  AssetInitOptions,
+  Container,
+  Graphics,
+  Rectangle,
+  Sprite,
+} from 'pixi.js';
 import { iSceneOptions } from '../../scenes/scene/types';
 import Scene from '../../scenes/scene/scene';
 
@@ -12,6 +18,7 @@ export interface iGameSceneDefinition {
 export interface iGameConfig {
   referenceSize: Rectangle;
   scenes: iGameSceneDefinition[];
+  assetsInitOptions: AssetInitOptions;
 }
 
 export enum eGameStates {

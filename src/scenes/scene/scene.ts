@@ -1,19 +1,13 @@
 import gsap from 'gsap';
-import {
-  Assets,
-  AssetsBundle,
-  Color,
-  Container,
-  Rectangle,
-  Sprite,
-} from 'pixi.js';
+import { Assets, Color, Container, Rectangle, Sprite } from 'pixi.js';
 import { iSceneOptions } from './types';
 import createRadialGradientTexture from '../../utils/createRadialGradientTexture';
 
 export default class Scene extends Container {
   protected _id: string = '';
   protected _contentContainer: Container;
-  protected _load: AssetsBundle | null = null;
+  protected _assetsBundleId: string = '';
+  protected _isRunning: boolean = false;
   public hideAnimationVars: gsap.TweenVars = { duration: 0.5, alpha: 0 };
   public showAnimationVars: gsap.TweenVars = { duration: 0.5, alpha: 0 };
   public referenceFrame: Rectangle;
@@ -23,6 +17,10 @@ export default class Scene extends Container {
     return this._id;
   }
 
+  public get isRunning() {
+    return this._isRunning;
+  }
+
   constructor(options: iSceneOptions) {
     super();
 
@@ -30,7 +28,7 @@ export default class Scene extends Container {
     this._id = options.id ?? '';
     this.resolution = options.resolution ?? 1;
     this.referenceFrame = options.referenceFrame;
-    this._load = options.load ?? null;
+    this._assetsBundleId = options.assetBundleId ?? '';
     if (options.hideAnimation !== undefined) {
       this.hideAnimationVars = {
         ...this.hideAnimationVars,
@@ -85,9 +83,8 @@ export default class Scene extends Container {
    * It will load the configured assets through the constructor options given.
    */
   public async load() {
-    if (this._load !== null) {
-      Assets.addBundle(this.load.name, this._load.assets);
-      await Assets.loadBundle(this.load.name);
+    if (this._assetsBundleId !== '') {
+      await Assets.loadBundle(this._assetsBundleId);
     }
   }
 
@@ -114,6 +111,7 @@ export default class Scene extends Container {
    * Override this method to reset the scene, called right after the scene is hidden.
    */
   public reset() {
+    this._isRunning = false;
     this.alpha = 0;
   }
 
