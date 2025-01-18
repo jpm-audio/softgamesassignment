@@ -6,7 +6,7 @@ import SceneTask2 from '../../scenes/task2/sceneTask2';
 import SceneTask3 from '../../scenes/task3/sceneTask3';
 import SceneMain from '../../scenes/main/sceneMain';
 
-const mainFrame = new Rectangle(0, 0, 1000, 1000);
+const mainFrame = new Rectangle(0, 0, 1280, 1280);
 
 const commonSceneOptions: iSceneOptions = {
   referenceFrame: mainFrame,
