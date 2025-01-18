@@ -1,6 +1,6 @@
 import { Application, Container, EventEmitter } from 'pixi.js';
 import Scene from '../../scenes/scene/scene';
-import { eGameEvents, iGameEventErrorInfo } from './types';
+import { eGameEvents, iGameConfig, iGameEventErrorInfo } from './types';
 
 /**
  * Game Controller
@@ -12,6 +12,7 @@ export default class GameController {
   private static _bus: EventEmitter;
   private static _app: Application;
 
+  private _config: iGameConfig;
   private _scenes: Scene[] = [];
   private _currentSceneIndex: number = -1;
   private _layerGame!: Container;
@@ -33,6 +34,10 @@ export default class GameController {
     return GameController._app.renderer;
   }
 
+  public static get assetsResolution() {
+    return 1;
+  }
+
   public static get ticker() {
     return GameController._app.ticker;
   }
@@ -42,10 +47,10 @@ export default class GameController {
    * @param app
    * @returns
    */
-  public static async init(app: Application) {
+  public static async init(app: Application, config: iGameConfig) {
     GameController._app = app;
     GameController._bus = new EventEmitter();
-    GameController._instance = new GameController();
+    GameController._instance = new GameController(config);
     // Environment system
 
     return GameController.game.init();
@@ -54,7 +59,9 @@ export default class GameController {
   /**
    * Constructor
    */
-  constructor() {}
+  constructor(config: iGameConfig) {
+    this._config = config;
+  }
 
   public async init() {
     // First init Error notification system
@@ -71,13 +78,17 @@ export default class GameController {
 
     // Scenes
     // - Create and add scenes
+    this._config.scenes.forEach((sceneConfig) => {
+      this._scenes.push(new sceneConfig.class(sceneConfig.options));
+    });
 
     // - Init Main Scene
+    this._setSceneByIndex(0);
 
     // Resize Handling
   }
 
-  protected async _setScene(sceneIndex: number) {
+  protected async _setSceneByIndex(sceneIndex: number) {
     // Checkif index is valid
     if (sceneIndex < 0 || sceneIndex >= this._scenes.length) return;
 
@@ -85,9 +96,25 @@ export default class GameController {
     const currentScene = this._scenes[this._currentSceneIndex];
     const nextScene = this._scenes[sceneIndex];
 
-    currentScene.hide();
-    nextScene.show();
+    // Disable UI
 
+    // Change the scenes
+    await nextScene.init();
+
+    this._layerGame.addChild(nextScene);
+
+    const currentSceneHide =
+      currentScene !== undefined ? currentScene.hide() : null;
+    const nextSceneShow = nextScene.show();
+
+    await Promise.all([currentSceneHide, nextSceneShow]);
+
+    if (currentScene !== undefined) {
+      await currentScene.reset();
+      this._layerGame.removeChild(currentScene);
+    }
+
+    // Update scene index
     this._currentSceneIndex = sceneIndex;
   }
 
