@@ -9,7 +9,7 @@ export default class Card extends Container {
     super();
 
     this.id = id;
-    console.log(id, frame, front, back);
+
     const frameSprite = Sprite.from(frame);
     this.front = Sprite.from(front);
     this.back = Sprite.from(back);

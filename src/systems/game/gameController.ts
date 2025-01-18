@@ -1,6 +1,8 @@
 import { Application, Container, EventEmitter } from 'pixi.js';
 import Scene from '../../scenes/scene/scene';
 import { eGameEvents, iGameConfig, iGameEventErrorInfo } from './types';
+import Environment from '../environment/environment';
+import { eEnvironmentEvents } from '../environment/types';
 
 /**
  * Game Controller
@@ -11,15 +13,21 @@ export default class GameController {
   private static _instance: GameController;
   private static _bus: EventEmitter;
   private static _app: Application;
+  private static _environment: Environment;
 
-  private _config: iGameConfig;
-  private _scenes: Scene[] = [];
-  private _currentSceneIndex: number = -1;
-  private _layerGame!: Container;
-  private _layerUI!: Container;
+  protected _config: iGameConfig;
+  protected _scenes: Scene[] = [];
+  protected _currentSceneIndex: number = -1;
+  protected _layerGame!: Container;
+  protected _layerUI!: Container;
+  protected _drawFrame!: { width: number; height: number };
 
   protected static get _stage() {
     return GameController._app.stage;
+  }
+
+  public static get environment() {
+    return GameController._environment;
   }
 
   public static get game() {
@@ -47,7 +55,12 @@ export default class GameController {
    * @param app
    * @returns
    */
-  public static async init(app: Application, config: iGameConfig) {
+  public static async init(
+    app: Application,
+    environment: Environment,
+    config: iGameConfig
+  ) {
+    GameController._environment = environment;
     GameController._app = app;
     GameController._bus = new EventEmitter();
     GameController._instance = new GameController(config);
@@ -61,6 +74,10 @@ export default class GameController {
    */
   constructor(config: iGameConfig) {
     this._config = config;
+    this._drawFrame = {
+      width: this._config.referenceSize.width,
+      height: this._config.referenceSize.height,
+    };
   }
 
   /**
@@ -83,13 +100,19 @@ export default class GameController {
     // Scenes
     // - Create and add scenes
     this._config.scenes.forEach((sceneConfig) => {
-      this._scenes.push(new sceneConfig.class(sceneConfig.options));
+      this._scenes.push(
+        new sceneConfig.class({
+          ...sceneConfig.options,
+          ...{ resolution: GameController.assetsResolution },
+        })
+      );
     });
 
     // - Init Main Scene
     this._setSceneByIndex(1);
 
     // Resize Handling
+    this._watchResize();
   }
 
   /**
@@ -112,6 +135,7 @@ export default class GameController {
     await nextScene.init();
 
     this._layerGame.addChild(nextScene);
+    nextScene.onScreenResize(this._drawFrame);
 
     const currentSceneHide =
       currentScene !== undefined ? currentScene.hide() : null;
@@ -129,6 +153,23 @@ export default class GameController {
   }
 
   /**
+   * Start listening to environment events to handle screen resize.
+   */
+  protected _watchResize() {
+    GameController.environment.on(
+      eEnvironmentEvents.SCREEN_SIZE_CHANGE,
+      this.onScreenResize,
+      this
+    );
+    GameController.environment.on(
+      eEnvironmentEvents.ORIENTATION_CHANGE,
+      this.onScreenResize,
+      this
+    );
+    this.onScreenResize();
+  }
+
+  /**
    *Listener callback for error events.
    * It will display an alert with the error message.
    *
@@ -143,5 +184,50 @@ export default class GameController {
    * It will calculate the proper scale to fit the current size and also it will
    * propagate the resize to the rest of the game hierarchy if needed.
    */
-  public onScreenResize() {}
+  public onScreenResize() {
+    // Calculate the proper scale to fit the current size.
+    let scale = 1;
+
+    if (GameController.environment.viewportAR < 1) {
+      scale =
+        GameController._app.canvas.width / this._config.referenceSize.width;
+    } else {
+      scale =
+        GameController._app.canvas.height / this._config.referenceSize.height;
+    }
+
+    scale /= GameController.environment.canvasResolution;
+
+    // Calculate the drawFrame size
+    this._drawFrame =
+      GameController.environment.viewportAR < 1
+        ? {
+            width: this._config.referenceSize.height,
+            height:
+              this._config.referenceSize.height /
+              GameController.environment.viewportAR,
+          }
+        : {
+            width:
+              this._config.referenceSize.height *
+              GameController.environment.viewportAR,
+            height: this._config.referenceSize.height,
+          };
+
+    this._layerGame.scale.set(scale);
+
+    console.log(GameController.environment.viewportAR, scale, this._drawFrame);
+
+    // Center the game layer by the reference frame into the draw frame
+    this._layerGame.x =
+      ((this._drawFrame.width - this._config.referenceSize.width) / 2) * scale;
+    this._layerGame.y =
+      ((this._drawFrame.height - this._config.referenceSize.height) / 2) *
+      scale;
+
+    // Update the draw frame in the scenes
+    if (this._scenes[this._currentSceneIndex]) {
+      this._scenes[this._currentSceneIndex].onScreenResize(this._drawFrame);
+    }
+  }
 }

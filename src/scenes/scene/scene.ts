@@ -9,7 +9,6 @@ import {
 } from 'pixi.js';
 import { iSceneOptions } from './types';
 import createRadialGradientTexture from '../../utils/createRadialGradientTexture';
-import GameController from '../../systems/game/gameController';
 
 export default class Scene extends Container {
   protected _id: string = '';
@@ -18,6 +17,7 @@ export default class Scene extends Container {
   public hideAnimationVars: gsap.TweenVars = { duration: 0.5, alpha: 0 };
   public showAnimationVars: gsap.TweenVars = { duration: 0.5, alpha: 0 };
   public referenceFrame: Rectangle;
+  public resolution: number = 1;
 
   public get id() {
     return this._id;
@@ -28,6 +28,7 @@ export default class Scene extends Container {
 
     // Update scene options
     this._id = options.id ?? '';
+    this.resolution = options.resolution ?? 1;
     this.referenceFrame = options.referenceFrame;
     this._load = options.load ?? null;
     if (options.hideAnimation !== undefined) {
@@ -52,7 +53,7 @@ export default class Scene extends Container {
   }
 
   /**
-   * Uitility method to create a radial gradient background for the scene.
+   * Utility method to create a radial gradient background for the scene.
    *
    * @param colorStops
    * @returns
@@ -69,7 +70,7 @@ export default class Scene extends Container {
       this.referenceFrame.height
     );
     const bgTexture = createRadialGradientTexture(
-      backgroundRadius * GameController.assetsResolution,
+      backgroundRadius * this.resolution,
       colorStops
     );
     const background = Sprite.from(bgTexture);
@@ -99,7 +100,6 @@ export default class Scene extends Container {
    * Override this method to add content to the scene, called showing the scene.
    */
   public async show() {
-    console.log('show', this.showAnimationVars);
     await gsap.to(this, this.showAnimationVars);
   }
 

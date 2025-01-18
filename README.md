@@ -4,9 +4,18 @@ Game Developer Assignment for Softgames created by Jesús Pérez de Miguel <jesu
 
 ## Comments
 
-### Pixi.js Version: 8.6.1
+### Pixi.js Version not v7 but v8.6.1.
 
 The assignment specifies v7, but I've been using v8 for months and I'd rather not spend time remembering the differences between versions. So I've decided to use v8 which I'm currently more familiar with.
+
+### Tweens with GSAP <https://gsap.com/>
+
+The project uses GSAP library for tween animations since it works with no issues with Pixi.js v8 and it has great support and documentation.
+
+### Environment Detection
+
+I decided to add a custom environment detection class that I had already developed, which also uses some functionality from the ua-parser-js library.
+Decision made also to save time and focus on the tasks at hand.
 
 ## Run
 

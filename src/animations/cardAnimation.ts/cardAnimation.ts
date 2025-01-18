@@ -62,8 +62,6 @@ export default class CardAnimation {
       this._currentTweens.splice(this._currentTweens.indexOf(tween2), 1);
       onComplete();
     };
-
-    tween1.pause();
   }
 
   public start() {
