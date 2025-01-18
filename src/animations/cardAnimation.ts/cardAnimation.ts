@@ -4,7 +4,6 @@ import Card from '../../components/cards/card';
 
 export default class CardAnimation {
   public FLIP_OFFSET = { x: 0, y: -50 };
-  public duration = 0.5;
   protected _currentTweens: gsap.core.Tween[] = [];
   protected _isRunning: boolean = false;
 
@@ -12,8 +11,9 @@ export default class CardAnimation {
     return this._isRunning;
   }
 
-  public addPlay(
+  constructor(
     card: Card,
+    duration: number,
     from: Point,
     to: Point,
     onFlip: () => void,
@@ -34,7 +34,7 @@ export default class CardAnimation {
         skewX: -3,
         skewY: -7,
       },
-      duration: this.duration / 2,
+      duration: duration / 2,
       ease: 'power1.in',
     });
     tween1.pause();
@@ -48,7 +48,7 @@ export default class CardAnimation {
         skewX: 0,
         skewY: 0,
       },
-      duration: this.duration / 2,
+      duration: duration / 2,
       ease: 'power1.out',
       onComplete: onComplete,
     });
@@ -66,27 +66,24 @@ export default class CardAnimation {
 
     tween2.vars.onComplete = () => {
       this._currentTweens.splice(this._currentTweens.indexOf(tween2), 1);
-      this._isRunning = false;
       onComplete();
     };
 
     tween1.play();
   }
 
-  public start() {
-    this._isRunning = true;
-    this._currentTweens.forEach((tween) => tween.play());
-  }
-
   public pause() {
+    if (this._isRunning) return;
     this._currentTweens.forEach((tween) => tween.pause());
   }
 
   public resume() {
+    if (this._isRunning) return;
     this._currentTweens.forEach((tween) => tween.resume());
   }
 
   public stop() {
+    if (this._isRunning) return;
     this._isRunning = false;
     this._currentTweens.forEach((tween) => tween.kill());
     this._currentTweens = [];

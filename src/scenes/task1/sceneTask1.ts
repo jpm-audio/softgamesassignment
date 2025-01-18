@@ -13,14 +13,24 @@ import waitForTickerTime from '../../utils/waitForTickerTime';
 import waitForCondition from '../../utils/waitForCondition';
 import GameController from '../../systems/game/gameController';
 
+/**
+ * Task 1 Scene
+ *
+ * “Ace of Shadows”
+ * Create 144 sprites (NOT graphic objects) that are stacked on top of each other like
+ * cards in a deck. The top card must cover the bottom card, but not completely.
+ * Every 1 second the top card should move to a different stack - the animation of the
+ * movement should take 2 seconds.
+ */
 export default class SceneTask1 extends Scene {
   private _isInitialized: boolean = false;
+  private _isPaused: boolean = false;
   private _taskConfig = TASK_1_CONFIG;
 
   private _background!: Sprite;
   private _decks: Deck[] = [];
   private _cards: Card[] = [];
-  private _cardAnimation: CardAnimation;
+  private _cardAnimations: CardAnimation[] = [];
   private _animationTicker: Ticker;
   private _uiConsole!: Task1Console;
 
@@ -31,6 +41,11 @@ export default class SceneTask1 extends Scene {
 
   public set isRunning(value: boolean) {
     this._isRunning = value;
+    this._updateUIState();
+  }
+
+  public set isPaused(value: boolean) {
+    this._isPaused = value;
     this._updateUIState();
   }
 
@@ -48,8 +63,6 @@ export default class SceneTask1 extends Scene {
     this.addChildAt(this._background, 0);
 
     // Set the animation up
-    this._cardAnimation = new CardAnimation();
-    this._cardAnimation.duration = this._taskConfig.animations.animationTime;
     this._animationTicker = new Ticker();
 
     // Layer to contain the 2 decks of cards at the bottom of the screen
@@ -71,6 +84,9 @@ export default class SceneTask1 extends Scene {
     this.addChild(this._layerUI);
   }
 
+  /**
+   * Initialize the scene creating all the needed elements
+   */
   public async init() {
     if (!this._isInitialized) {
       this._isInitialized = true;
@@ -94,6 +110,9 @@ export default class SceneTask1 extends Scene {
     playButton.enable();
   }
 
+  /**
+   * Create all the cards fron config by using a card factory
+   */
   private async _createCards() {
     for (let i = 0; i < this._taskConfig.numCards; i++) {
       const card = CardsFactory.card((i + 1).toString());
@@ -101,6 +120,9 @@ export default class SceneTask1 extends Scene {
     }
   }
 
+  /**
+   * Create the decks of cards and position them in the scene
+   */
   private async _createDecks() {
     // Create the _decks of cards
     this._decks.push(new Deck(DECK1_CONFIG));
@@ -119,6 +141,9 @@ export default class SceneTask1 extends Scene {
       this.referenceFrame.width / 2 + this._taskConfig.decksGap;
   }
 
+  /**
+   * Create the UI console and bind the buttons to scene actions
+   */
   private _createUI() {
     // Create the UI console
     this._uiConsole = new Task1Console();
@@ -133,12 +158,12 @@ export default class SceneTask1 extends Scene {
     const stopButton = this._uiConsole.buttons.get(
       eTask1ConsoleButtons.STOP
     ) as Button;
-    stopButton.on('pointerup', this.stop, this);
+    stopButton.on('pointerup', this.pause, this);
 
     const resetButton = this._uiConsole.buttons.get(
       eTask1ConsoleButtons.RESET
     ) as Button;
-    resetButton.on('pointerup', this.reset, this);
+    resetButton.on('pointerup', this.resetAnimation, this);
 
     // Position the UI
     this._uiConsole.x = (this.referenceFrame.width - this._uiConsole.width) / 2;
@@ -148,16 +173,28 @@ export default class SceneTask1 extends Scene {
       this._taskConfig.margin;
   }
 
+  /**
+   * Programm a iteration of the card animation.
+   * At the end it will recursively call itself until the animation is finished,
+   * or the scene is paused or reseted.
+   *
+   * @returns
+   */
   private async _animateACard() {
-    await waitForCondition(() => !this._isRunning);
+    console.log(this._isPaused);
+    await waitForCondition(() => this._isPaused);
 
     if (!this._isRunning) return;
 
     // Get the card from the first deck...
     const card = this._decks[0].getCard();
 
-    // if any card found...
-    if (!card) return;
+    // if any card found... We guess the animation has ended
+    if (!card) {
+      this.isRunning = false;
+      this._updateUIState();
+      return;
+    }
 
     const numCardsAnimated =
       this._layerFrontCards.children.length +
@@ -172,8 +209,10 @@ export default class SceneTask1 extends Scene {
     // Add the card to the back layer
     this._layerBackCards.addChildAt(card, 0);
 
-    this._cardAnimation.addPlay(
+    // Create and add a new card animation
+    const cardAnimation = new CardAnimation(
       card,
+      this._taskConfig.animations.animationTime,
       new Point(
         this._decks[0].x + deck1Coords.x,
         this._decks[0].y + deck1Coords.y
@@ -194,13 +233,15 @@ export default class SceneTask1 extends Scene {
       () => {
         this._layerFrontCards.removeChild(card);
         this._decks[1].addCard(card);
+        this._cardAnimations.splice(
+          this._cardAnimations.indexOf(cardAnimation),
+          1
+        );
         this._updateUIState();
       }
     );
 
-    //this._cardAnimation.start();
-
-    console.log('card animation started', this._cardAnimation.duration);
+    this._cardAnimations.push(cardAnimation);
 
     // Delay between card animations
     await waitForTickerTime(
@@ -208,12 +249,13 @@ export default class SceneTask1 extends Scene {
       GameController.ticker
     );
 
-    console.log('next card', this._taskConfig.animations.cardsInterval);
-
     // Next card!
     this._animateACard();
   }
 
+  /**
+   * Reset all the cards and the decks to the initial state
+   */
   private _resetCards() {
     // Empty the decks
     this._decks.forEach((deck) => deck.reset());
@@ -223,8 +265,15 @@ export default class SceneTask1 extends Scene {
       card.reset();
       this._decks[0].addCard(card);
     });
+
+    this._updateUIState();
   }
 
+  /**
+   * Updates the UI state according to the current scene state
+   *
+   * @returns
+   */
   private _updateUIState() {
     if (!this._isInitialized) return;
     const playButton = this._uiConsole.buttons.get(
@@ -237,12 +286,16 @@ export default class SceneTask1 extends Scene {
       eTask1ConsoleButtons.RESET
     ) as Button;
 
-    if (!this._isRunning) {
+    if ((!this._isRunning || this._isPaused) && this._decks[0].numCards > 0) {
       playButton.enable();
-      stopButton.disable();
     } else {
       playButton.disable();
+    }
+
+    if (this._isRunning && !this._isPaused) {
       stopButton.enable();
+    } else {
+      stopButton.disable();
     }
 
     if (this._decks[1].numCards > 0) {
@@ -252,35 +305,64 @@ export default class SceneTask1 extends Scene {
     }
   }
 
+  /**
+   * Starts the animation of the cards.
+   * If the scene is already running or paused it will resume the animation.
+   *
+   * @returns
+   */
   public start() {
-    console.log('is running', this._isRunning);
-    if (this._isRunning) return;
+    if (this._isRunning && !this._isPaused) return;
+
     this.isRunning = true;
     this._animationTicker.start();
-    if (this._cardAnimation.isRunning) {
-      this._cardAnimation.resume();
+
+    if (this._isPaused) {
+      this.isPaused = false;
+      this._cardAnimations.forEach((a) => a.resume());
     } else {
       this._animateACard();
     }
   }
 
-  public stop(): void {
+  /**
+   * It will pause the animation of the cards whether it is running.
+   * @returns
+   */
+  public pause(): void {
     if (!this._isRunning) return;
-    this.isRunning = false;
+    this.isPaused = true;
     this._animationTicker.stop();
-    this._cardAnimation.pause();
+    this._cardAnimations.forEach((a) => a.pause());
   }
 
-  public reset() {
-    super.reset();
-
-    if (!this._isInitialized) return;
+  /**
+   * Stops the animation of the cards and resets the scene to the initial state.
+   */
+  public resetAnimation() {
     this.isRunning = false;
+    this.isPaused = false;
     this._animationTicker.stop();
-    this._cardAnimation.stop();
+    this._cardAnimations.forEach((a) => a.stop());
+    this._cardAnimations = [];
     this._resetCards();
   }
 
+  /**
+   * Extended Scene reset method.
+   * @returns
+   */
+  public reset() {
+    super.reset();
+    if (!this._isInitialized) return;
+    this.resetAnimation();
+  }
+
+  /**
+   * Handles the scene resize event, adapting the background.
+   *
+   * @param drawFrame
+   */
   public onScreenResize(drawFrame: { width: number; height: number }) {
     const size = Math.max(drawFrame.width, drawFrame.height);
     this._background.width = this._background.height = size;
