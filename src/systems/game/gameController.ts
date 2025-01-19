@@ -10,6 +10,7 @@ import Environment from '../environment/environment';
 import { eEnvironmentEvents } from '../environment/types';
 import FpsDisplay from '../../components/UI/display/fpsDisplay';
 import BackButton from '../../components/UI/backButton/backButton';
+import { Fullscreen } from '../fullscreen/fullscreen';
 
 /**
  * Game Controller
@@ -21,6 +22,7 @@ export default class GameController {
   private static _bus: EventEmitter;
   private static _app: Application;
   private static _environment: Environment;
+  private static _fullscreen: Fullscreen;
 
   protected _config: iGameConfig;
   protected _scenes: Scene[] = [];
@@ -72,7 +74,7 @@ export default class GameController {
     GameController._app = app;
     GameController._bus = new EventEmitter();
     GameController._instance = new GameController(config);
-    // Environment system
+    GameController._fullscreen = new Fullscreen();
 
     return GameController.game.init();
   }
@@ -137,6 +139,13 @@ export default class GameController {
     this._backButton.visible = false;
     this._backButton.disable();
     this._layerUI.addChild(this._backButton);
+
+    // Fullscreen
+    await GameController._fullscreen.init(
+      document.querySelector('.canvas_container') as HTMLElement,
+      GameController.environment,
+      GameController.bus
+    );
 
     // - Init Main Scene
     this._setSceneByIndex(0);

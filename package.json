@@ -20,6 +20,8 @@
     "vite": "^5.4.11"
   },
   "dependencies": {
+    "@types/fscreen": "^1.0.4",
+    "fscreen": "^1.2.0",
     "gsap": "^3.12.7",
     "pixi.js": "^8.6.1",
     "ua-parser-js": "^2.0.0"

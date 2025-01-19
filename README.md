@@ -17,6 +17,10 @@ The project uses GSAP library for tween animations since it works with no issues
 I decided to add a custom environment detection class that I had already developed, which also uses some functionality from the ua-parser-js library.
 Decision made also to save time and focus on the tasks at hand.
 
+### Fullscreen with fsScreen <https://github.com/rafgraph/fscreen#readme>
+
+To meet the full screen requirement, I use the fsScreen library to work regardless of the browser. To use it, there is a class created by me that handles the full screen functionality.
+
 ## Run
 
 To play the game in local environment just run
