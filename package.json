@@ -1,7 +1,7 @@
 {
   "name": "jmsoftgamesassignment",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Game Developer Assignment for Softgames",
   "author": "Jesús Pérez de Miguel <jesus@perezdemiguel.com>",
   "scripts": {
