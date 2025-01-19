@@ -109,7 +109,6 @@ export default class Scene extends FadeContainer {
    * It will load the configured assets through the constructor options given.
    */
   public async load() {
-    console.log('Scene::load', this._assetsBundleId);
     if (this._assetsBundleId !== '') {
       await Assets.loadBundle(this._assetsBundleId);
     }

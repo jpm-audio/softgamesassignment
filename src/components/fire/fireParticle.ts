@@ -17,7 +17,6 @@ const textureNames = [
 
 export class FireParticle extends ParticleItem {
   constructor() {
-    console.log(randomListItem(textureNames as []));
     super(Texture.from(randomListItem(textureNames as [])));
   }
 }

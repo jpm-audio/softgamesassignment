@@ -15,8 +15,6 @@ export default class SceneTask2 extends Scene {
   constructor(options: iSceneOptions) {
     super(options);
 
-    console.log(options);
-
     // Create the background image by using a simple radial gradient
     this._background = this._getBackgroundGradient([
       { color: new Color(0xfe00fe), stop: 0 },

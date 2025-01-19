@@ -26,7 +26,6 @@ export default class TextImageBlender {
   };
 
   constructor(options: iTextImageBlenderOption) {
-    console.log(options);
     this._options = { ...this._options, ...options };
 
     const textStyle = new TextStyle(this._options.textStyle);
@@ -91,8 +90,6 @@ export default class TextImageBlender {
           ...this._options.textStyle,
           ...{ fontSize },
         };
-
-        console.log(style);
 
         const text = new Text({
           text: elementText,

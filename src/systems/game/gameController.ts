@@ -9,8 +9,8 @@ import {
 import Environment from '../environment/environment';
 import { eEnvironmentEvents } from '../environment/types';
 import FpsDisplay from '../../components/UI/display/fpsDisplay';
-import BackButton from '../../components/UI/backButton/backButton';
 import { Fullscreen } from '../fullscreen/fullscreen';
+import { GlobalConsole } from '../../components/UI/console/globalConsole';
 
 /**
  * Game Controller
@@ -29,7 +29,7 @@ export default class GameController {
   protected _currentSceneIndex: number = -1;
   protected _layerGame!: Container;
   protected _layerUI!: Container;
-  protected _backButton!: BackButton;
+  protected _globalConsole!: GlobalConsole;
   protected _drawFrame!: { width: number; height: number };
 
   protected static get _stage() {
@@ -134,15 +134,15 @@ export default class GameController {
     this._layerUI.addChild(fpsDisplay);
 
     // Back Button
-    this._backButton = new BackButton();
-    this._backButton.alpha = 0;
-    this._backButton.visible = false;
-    this._backButton.disable();
-    this._layerUI.addChild(this._backButton);
+    this._globalConsole = new GlobalConsole(
+      GameController.bus,
+      GameController._fullscreen
+    );
+    this._layerUI.addChild(this._globalConsole);
 
     // Fullscreen
     await GameController._fullscreen.init(
-      document.querySelector('.canvas_container') as HTMLElement,
+      document.querySelector('#canvas_container') as HTMLElement,
       GameController.environment,
       GameController.bus
     );
@@ -169,7 +169,7 @@ export default class GameController {
     const nextScene = this._scenes[sceneIndex];
 
     // Disable UI
-    this._backButton.disable();
+    this._globalConsole.disable();
 
     // Change the scenes
     await nextScene.init();
@@ -179,9 +179,9 @@ export default class GameController {
 
     // Show the Back Button?
     if (sceneIndex > 0) {
-      this._backButton.show();
+      this._globalConsole.backButton.show();
     } else {
-      this._backButton.hide();
+      this._globalConsole.backButton.hide();
     }
 
     const currentSceneHide =
@@ -199,7 +199,7 @@ export default class GameController {
     this._currentSceneIndex = sceneIndex;
 
     // Enable UI
-    this._backButton.enable();
+    this._globalConsole.enable();
   }
 
   /**
@@ -287,13 +287,13 @@ export default class GameController {
       scale;
 
     // Set the Back Button position
-    if (this._backButton) {
-      this._backButton.x =
+    if (this._globalConsole) {
+      this._globalConsole.x =
         this._drawFrame.width -
-        this._backButton.width / 2 -
+        this._globalConsole.width -
         this._config.referenceMargin;
-      this._backButton.y =
-        this._backButton.height / 2 + this._config.referenceMargin;
+      this._globalConsole.y =
+        this._globalConsole.height / 2 + this._config.referenceMargin;
     }
 
     // Update the draw frame in the scenes
